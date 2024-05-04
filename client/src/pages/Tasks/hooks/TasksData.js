@@ -1,19 +1,19 @@
-import { useQuery } from 'react-query';
-import axios from 'axios';
+import { useQuery } from "react-query";
+import axios from "axios";
 
-const fetchTasks = (pageNumber) => {
-    return axios.get(`http://localhost:3000/api/task/getAllTasks?page=${pageNumber}`);
-  };
+const fetchTasks = ({ pageNumber, userId }) => {
+  return axios.get(
+    `http://localhost:3000/api/task/getAllTasks?page=${pageNumber}&userId=${userId}`);
+};
 
-export const TasksData = (pageNumber) => {
-    return useQuery(
-        ["tasks", pageNumber],
-        () => {
-          return fetchTasks(pageNumber);
-        },
-        {
-          keepPreviousData: true,
-        }
-      );
-}
-
+export const TasksData = (pageNumber, userId) => {
+  return useQuery(
+    ["tasks", pageNumber, userId],
+    () => {
+      return fetchTasks({ pageNumber, userId });
+    },
+    {
+      keepPreviousData: true,
+    }
+  );
+};

@@ -4,13 +4,17 @@ import { ProjectsData } from "./hooks/ProjectsData";
 import { IoIosSearch } from "react-icons/io";
 import AddProject from "./components/AddProject";
 import Project from "./components/Project";
+import { AuthContext } from "../Auth/contexts/AuthContext";
 
 const Projects = () => {
   const [pageNumber, setPageNumber] = useState(1);
   const { darkMode } = useContext(ThemeContext);
   const [searchProject, setSearchProject] = useState("");
 
-  const { isLoading, data, isError, error } = ProjectsData(pageNumber);
+  const {user} = useContext(AuthContext);
+
+  const userId = user._id;
+  const { isLoading, data, isError, error } = ProjectsData(pageNumber, userId);
 
   if (isLoading) {
     return <h2>Loading ...</h2>;
@@ -27,7 +31,7 @@ const Projects = () => {
       <div
         className={`flex flex-col p-3 md:px-7 md:py-5 w-full gap-4 rounded-md bg-primary-foreground`}
       >
-        <div className="flex justify-between px-7 md:text-lg">
+        <div className="flex justify-between px-10 md:text-lg">
           <div>
             <button
               className={`p-2  rounded-md bg-blue-600 hover:bg-blue-500 text-gray-200 w-40 opacity-90`}
@@ -42,7 +46,7 @@ const Projects = () => {
               id="addProject"
             >
               <div className={`w-[500px] px-10 py-4 rounded-md`}>
-                <AddProject />
+                <AddProject userId={userId} />
               </div>
             </dialog>
           </div>

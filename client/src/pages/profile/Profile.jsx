@@ -1,9 +1,22 @@
-import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useUserData } from "./hooks/profileData";
 
 const Profile = () => {
   const location = useLocation();
-  const user = location.state.user;
+  const userEmail = location.state;
+  
+
+  const {isLoading, data, isError, error} = useUserData(userEmail);
+
+  if (isLoading) {
+    return <h2>Loading...</h2>
+  }
+
+  if (isError) {
+    return <h2>{error.message}</h2>
+  }
+
+  const user = data.data;
 
   const details = [
     { Email: `${user.email}` },

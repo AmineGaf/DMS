@@ -17,6 +17,10 @@ import Tasks from "./pages/Tasks/Tasks";
 import TaskDetails from "./pages/Tasks/components/TaskDetails";
 import Profile from "./pages/profile/Profile";
 import Settings from "./pages/settings/Settings";
+import ProjectDetails from "./pages/projects/components/ProjectDetails";
+import Gmail from "./pages/gmail/Gmail";
+import ChatGroup from "./pages/chat/chatGroup/ChatGroup";
+import Messenger from "./pages/chat/privateChat/Messenger";
 
 const RequireAuth = ({ children, requiredRoles }) => {
   const { user } = useContext(AuthContext);
@@ -62,28 +66,48 @@ const App = () => {
     {
       path: "/projects",
       element: <Projects />,
-      requiredRoles: ["admin", "projectManager", "user"],
+      requiredRoles: ["admin", "Project Manager"],
     },
     {
       path: "/tasks",
       element: <Tasks />,
-      requiredRoles: ["admin", "projectManager", "user"],
+      requiredRoles: ["admin", "Project Manager", "employee"],
     },
     {
       path: "/taskDetails/:id",
       element: <TaskDetails />,
-      requiredRoles: ["admin", "projectManager", "user"],
+      requiredRoles: ["admin", "Project Manager", "employee"],
     },
     {
-      path:"profile/:fullname",
+      path: "profile/:fullname",
       element: <Profile />,
       requiredRoles: ["admin", "Project Manager", "employee"],
     },
     {
-      path:"settings/:fullname",
+      path: "settings/:fullname",
       element: <Settings />,
       requiredRoles: ["admin", "Project Manager", "employee"],
-    }
+    },
+    {
+      path: "projectDetails/:projectTitle",
+      element: <ProjectDetails />,
+      requiredRoles: ["admin", "Project Manager", "employee"],
+    },
+    {
+      path: "gmail",
+      element: <Gmail />,
+      requiredRoles: ["admin", "Project Manager", "employee"],
+    },
+    {
+      path: "chat/group",
+      element: <ChatGroup/>,
+      requiredRoles: ["admin", "Project Manager", "employee"],
+    },
+    {
+      path: "chat/private",
+      element: <Messenger/>,
+      requiredRoles: ["admin", "Project Manager", "employee"],
+    },
   ];
 
   const { user } = useContext(AuthContext);
@@ -93,7 +117,7 @@ const App = () => {
         <BrowserRouter>
           <div className="flex">
             {user && <Sidebar />}
-            <div className="w-full h-screen bg-background text-foreground">
+            <div className="w-full bg-background text-foreground">
               {user && <Navbar />}
               <Routes>
                 {/* Authentification routes  */}

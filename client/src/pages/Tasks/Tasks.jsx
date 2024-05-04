@@ -5,6 +5,7 @@ import { IoIosSearch } from "react-icons/io";
 import Task from "./components/Task";
 import AddTask from "./components/AddTask";
 import Navbar from "../../components/Navbar";
+import { AuthContext } from "../Auth/contexts/AuthContext";
 
 const Tasks = () => {
   const [pageNumber, setPageNumber] = useState(1);
@@ -12,6 +13,8 @@ const Tasks = () => {
   const [selectedSort, setSelectedSort] = useState("default");
   const [selectedStatus, setSelectedStatus] = useState("default Status");
   const [searchTask, setSearchTask] = useState("");
+
+  const {user} = useContext(AuthContext);
 
   const listTitles = [
     "Task Name",
@@ -26,7 +29,10 @@ const Tasks = () => {
     "In progress": "In progress",
     Completed: "Completed",
   };
-  const { isLoading, data, isError, error } = TasksData(pageNumber);
+
+  
+  const userId = user._id;
+  const { isLoading, data, isError, error } = TasksData(pageNumber, userId);
 
   if (isLoading) {
     return <h2>Loading ...</h2>;
@@ -73,7 +79,7 @@ const Tasks = () => {
               id="addTask"
             >
               <div className={`w-[500px] px-10 py-4 rounded-md `}>
-                <AddTask />
+                <AddTask userId={userId} />
               </div>
             </dialog>
           </div>

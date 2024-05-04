@@ -25,8 +25,8 @@ const Task = ({ task }) => {
   };
 
   const handleViewTask = (task) => {
-    navigate(`/taskDetails/${task._id}`, {state: {task}});
-  }
+    navigate(`/taskDetails/${task._id}`, { state: { task } });
+  };
 
   return (
     <tr
@@ -37,10 +37,34 @@ const Task = ({ task }) => {
       <td className="py-4 px-4 ">{task.TaskName}</td>
       <td className="py-4 px-4">{task.ProjectName}</td>
       <td className="py-4 px-4">{task.ResponsibleUser}</td>
-      <td 
-      className={`flex justify-center ml-3 bg-gradient-to-r from-blue-700 to-cyan-400 text-blue-100 font-bold mt-4 py-1 max-w-[150px] rounded-md
-      ${darkMode ? "" : "opacity-60"}`} 
-      >{task.Status}</td>
+
+      {task.Status === "In progress" ? (
+        <td
+          className={`flex justify-center ml-3 bg-gradient-to-r from-blue-700 to-cyan-400 text-blue-100 font-bold mt-4 py-1 max-w-[150px] rounded-md ${
+            darkMode ? "" : "opacity-80"
+          }`}
+        >
+          {" "}
+          In progress
+        </td>
+      ) : task.Status === "Completed" ? (
+        <td
+          className={`flex justify-center ml-3 bg-gradient-to-r from-green-600 to-green-400 text-blue-100 font-bold mt-4 py-1 max-w-[150px] rounded-md ${
+            darkMode ? "" : "opacity-80"
+          }`}
+        >
+          Completed
+        </td>
+      ) : (
+        <td
+          className={`flex justify-center ml-3 bg-gradient-to-r from-red-600 to-red-400 text-blue-100 font-bold mt-4 py-1 max-w-[150px] rounded-md ${
+            darkMode ? "" : "opacity-80"
+          }`}
+        >
+          Not Started
+        </td>
+      )}
+
       <td className="py-4 px-4">
         {new Date(task.DueDate).toLocaleDateString("en-US")}
       </td>
@@ -51,47 +75,31 @@ const Task = ({ task }) => {
         />
         {openMenu && (
           <div
-            className={`absolute flex flex-col right-[140px] p-3 px-5 gap-1 rounded-md font-bold ${
-              darkMode
-                ? "bg-gray-800 opacity-80 "
-                : "border border-gray-300 bg-gray-100 "
-            }`}
+            className={`absolute flex flex-col z-10 right-[140px] p-3 px-5 gap-1 rounded-md bg-background text-lg `}
           >
             <button
               onClick={() => handleViewTask(task)}
-              className={`cursor-pointer ${
-                darkMode
-                  ? "hover:text-gray-50 "
-                  : "text-gray-700 hover:text-gray-500"
-              } `}
+              className="cursor-pointer hover:font-bold"
             >
               View
             </button>
             <button
               onClick={() => document.getElementById("editTask").showModal()}
-              className={` cursor-pointer ${
-                darkMode
-                  ? "hover:text-gray-50 "
-                  : "text-gray-700 hover:text-gray-500"
-              } `}
+              className="cursor-pointer hover:font-bold"
             >
               Edit
             </button>
-              <dialog
+            <dialog
               className={`bg-card border border-border rounded-md text-foreground`}
               id="editTask"
             >
               <div className={`w-[500px] px-10 py-4 rounded-md `}>
-                <EditTask task={task}/>
+                <EditTask task={task} />
               </div>
             </dialog>
             <button
               onClick={handleDeleteUser}
-              className={`cursor-pointer  ${
-                darkMode
-                  ? "hover:text-gray-50 "
-                  : "text-gray-700 hover:text-gray-500"
-              } `}
+              className="cursor-pointer hover:font-bold"
             >
               Delete
             </button>

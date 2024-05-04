@@ -60,10 +60,10 @@ UserRouter.post('/post', async (req, res) => {
 UserRouter.get('/getAll', async (req, res) => {
     try {
       const page = parseInt(req.query.page) || 1;
-      const limit = 5; // Number of users per page
+      const limit = 4; // Number of users per page
       const skip = (page - 1) * limit;
   
-      const users = await UserModel.find().skip(skip).limit(limit);
+      const users = await UserModel.find().select("-password").skip(skip).limit(limit);
       const totalUsers = await UserModel.countDocuments();
   
       const totalPages = Math.ceil(totalUsers / limit);
@@ -76,11 +76,12 @@ UserRouter.get('/getAll', async (req, res) => {
       res.status(500).json({ message: error.message });
     }
   });
-//GET USER BY ID
-UserRouter.get('/get/:id', async (req, res) => {
+//GET USER BY Email
+UserRouter.get('/get/:userEmail', async (req, res) => {
     try {
-        const id = req.params.id;
-        const user = await UserModel.findById(id).exec(); // Await the query execution
+        const userEmail = req.params.userEmail;
+
+        const user = await UserModel.findOne({email: userEmail});
 
         if (!user) {
             // Handle the case where the user is not found
@@ -92,6 +93,21 @@ UserRouter.get('/get/:id', async (req, res) => {
         res.status(500).json({ message: error });
     }
 }); 
+
+//GET by ID method
+UserRouter.get('/getbyid/:id', async (req, res) => {
+    try{
+        const user = await UserModel.findById(req.params.id);
+        res.json(user);
+    }
+    catch(error){
+        
+        res.status(500).json({message: error.message})
+    }
+
+})
+
+
 //UPDATE USER BY ID
 UserRouter.patch('/update/:id', async (req, res) => {
     try{

@@ -6,8 +6,7 @@ import * as Yup from "yup";
 import { ThemeContext } from "../../../contexts/ThemeContext";
 import { IoCloseSharp } from "react-icons/io5";
 
-
-const AddProject = () => {
+const AddProject = ({ userId }) => {
   const [error, setError] = useState(null);
   const queryClient = useQueryClient();
   const { darkMode } = useContext(ThemeContext);
@@ -18,7 +17,7 @@ const AddProject = () => {
     async (values) => {
       const response = await axios.post(
         "http://localhost:3000/api/project/addProject",
-        values
+        { ...values, userId }
       );
       return response.data;
     },
@@ -36,9 +35,12 @@ const AddProject = () => {
       title: "",
       logo: "",
       ProjectManager: "",
-      team: [{ MemberName: "", MemberRole: "" }],
+      team: [{ MemberEmail: "", MemberRole: "" }],
       CreationDate: "",
       description: "",
+      challenges: "",
+      solution: "",
+      documentation: "",
     },
     validationSchema: Yup.object({
       title: Yup.string().required("Project Title is required"),
@@ -48,17 +50,21 @@ const AddProject = () => {
       // "team.0.MemberRole": Yup.string().required("Member Role is required"),
       CreationDate: Yup.date().required("Creation Date is required"),
       description: Yup.string().required("Description is required"),
+      challenges: Yup.string().required("Challanges is required"),
+      solution: Yup.string().required("Solution is required"),
+      // documentation: Yup.string().required("Project documentation is required"),
     }),
     onSubmit: (values, { resetForm }) => {
       values.logo = image;
+      values.documentation = doc;
       addProject.mutate(values);
       resetForm();
     },
   });
 
-  const handleMemberNameChange = (index, event) => {
+  const handleMeMemberEmailChange = (index, event) => {
     const newMembers = [...formik.values.team];
-    newMembers[index].MemberName = event.target.value;
+    newMembers[index].MemberEmail = event.target.value;
     formik.setFieldValue("team", newMembers);
   };
 
@@ -71,7 +77,7 @@ const AddProject = () => {
   const addMember = () => {
     const newMembers = [
       ...formik.values.team,
-      { MemberName: "", MemberRole: "" },
+      { MemberEmail: "", MemberRole: "" },
     ];
     formik.setFieldValue("team", newMembers);
   };
@@ -94,11 +100,24 @@ const AddProject = () => {
       setImage(reader.result);
     };
   };
+
+  const handleDoc = (e) => {
+    const file = e.target.files[0];
+    setDocToBase(file);
+  };
+
+  const setDocToBase = (file) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      setDoc(reader.result);
+    };
+  };
   return (
     <form onSubmit={formik.handleSubmit} className="flex flex-col gap-2">
       <div
-      className="flex cursor-pointer justify-end relative text-2xl left-5"
-      onClick={() => document.getElementById("addProject").close()}
+        className="flex cursor-pointer justify-end relative text-2xl left-5"
+        onClick={() => document.getElementById("addProject").close()}
       >
         <IoCloseSharp />
       </div>
@@ -160,12 +179,12 @@ const AddProject = () => {
             <input
               className={`flex w-full p-2 rounded-md bg-input border-border text-foreground`}
               type="text"
-              placeholder="Member Name"
+              placeholder="Member email"
               value={member.MemberName}
-              onChange={(event) => handleMemberNameChange(index, event)}
+              onChange={(event) => handleMeMemberEmailChange(index, event)}
             />
             <input
-             className={`flex w-full p-2 rounded-md bg-input border-border text-foreground`}
+              className={`flex w-full p-2 rounded-md bg-input border-border text-foreground`}
               type="text"
               placeholder="Member Role"
               value={member.MemberRole}
@@ -238,6 +257,58 @@ const AddProject = () => {
             : ""}
         </h1>
       </div>
+      <div className="flex flex-col gap-2">
+        <label className="text-xl" htmlFor="challenges">
+          Challenges
+        </label>
+        <textarea
+          className={`flex w-full p-2 rounded-md bg-input border-border text-foreground`}
+          type="text"
+          name="challenges"
+          rows="4"
+          value={formik.values.challenges}
+          onChange={formik.handleChange}
+        ></textarea>
+        <h1 className="text-red-400">
+          {formik.touched.challenges && formik.errors.challenges
+            ? formik.errors.challenges
+            : ""}
+        </h1>
+      </div>
+      <div className="flex flex-col gap-2">
+        <label className="text-xl" htmlFor="solution">
+          Solution
+        </label>
+        <textarea
+          className={`flex w-full p-2 rounded-md bg-input border-border text-foreground`}
+          type="text"
+          name="solution"
+          rows="4"
+          value={formik.values.solution}
+          onChange={formik.handleChange}
+        ></textarea>
+        <h1 className="text-red-400">
+          {formik.touched.solution && formik.errors.solution
+            ? formik.errors.solution
+            : ""}
+        </h1>
+      </div>
+      <div className="flex flex-col gap-2">
+        <label className="text-xl" htmlFor="documentation">
+          Project Documentation
+        </label>
+        <input
+          className={`flex w-full p-2 rounded-md bg-input border-border text-foreground`}
+          onChange={handleDoc}
+          type="file"
+          id="formupload"
+          name="documentation"
+        />
+        {/* <h1 className="text-red-400">
+          {formik.touched.documentation && formik.errors.documentation ? formik.errors.documentation : ""}
+        </h1> */}
+      </div>
+
       {error && <p className="text-red-500">{error}</p>}
       <button
         className={`flex justify-center py-2 text-lg font-semibold rounded-md ${

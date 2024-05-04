@@ -19,6 +19,7 @@
     "cloudinary-react": "^1.8.1",
     "formik": "^2.4.5",
     "i18next": "^23.10.0",
+    "javascript-time-ago": "^2.5.10",
     "lucide-react": "^0.344.0",
     "react": "^18.2.0",
     "react-context": "^0.0.3",
@@ -33,7 +34,9 @@
     "react-select": "^5.8.0",
     "react-toastify": "^10.0.5",
     "shadcn-ui": "^0.8.0",
+    "socket.io-client": "^4.7.5",
     "table": "^6.8.1",
+    "timeago.js": "^4.0.2",
     "typeface-poppins": "^1.1.13",
     "yup": "^1.4.0"
   },

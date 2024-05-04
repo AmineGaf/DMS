@@ -5,16 +5,18 @@ import { useMutation, useQueryClient } from "react-query";
 import * as Yup from "yup";
 import { ThemeContext } from "../../../contexts/ThemeContext";
 
-const AddTask = () => {
+const AddTask = ({userId}) => {
   const [error, setError] = useState(null);
   const queryClient = useQueryClient();
   const { darkMode } = useContext(ThemeContext);
 
+
   const addTask = useMutation(
+    
     async (values) => {
       const response = await axios.post(
         "http://localhost:3000/api/task/addTask",
-        values
+        { ...values, userId}
       );
       return response.data;
     },
@@ -35,6 +37,14 @@ const AddTask = () => {
       Status: "",
       ResponsibleUser: "",
       DueDate: "",
+      TaskDetails: [
+        {
+          detailName: "",
+          detailStatus: "",
+          detailestimationDate: "",
+          detailDescription: "",
+        },
+      ],
     },
     validationSchema: Yup.object({
       TaskName: Yup.string().required("TaskName is required"),
@@ -48,6 +58,44 @@ const AddTask = () => {
       resetForm();
     },
   });
+
+  const handleDetailNameChange = (index, event) => {
+    const newDetails = [...formik.values.TaskDetails];
+    newDetails[index].detailName = event.target.value;
+    formik.setFieldValue("TaskDetails", newDetails);
+  };
+
+  const handleDetailStatusChange = (index, event) => {
+    const newDetails = [...formik.values.TaskDetails];
+    newDetails[index].detailStatus = event.target.value;
+    formik.setFieldValue("TaskDetails", newDetails);
+  };
+
+  const handleDetailDateChange = (index, event) => {
+    const newDetails = [...formik.values.TaskDetails];
+    newDetails[index].detailestimationDate = event.target.value;
+    formik.setFieldValue("TaskDetails", newDetails);
+  };
+
+  const handleDetailDescription = (index, event) => {
+    const newDetails = [...formik.values.TaskDetails];
+    newDetails[index].detailDescription = event.target.value;
+    formik.setFieldValue("TaskDetails", newDetails);
+  };
+
+  const addTaskDetail = () => {
+    const newDetails = [
+      ...formik.values.TaskDetails,
+      { detailName: "", detailStatus: "",detailDescription:"", detailestimationDate:""  },
+    ];
+    formik.setFieldValue("TaskDetails", newDetails);
+  };
+
+  const removeTask = (index) => {
+    const newDetails = [...formik.values.TaskDetails];
+    newDetails.splice(index, 1);
+    formik.setFieldValue("TaskDetails", newDetails);
+  };
 
   return (
     <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4">
@@ -143,13 +191,77 @@ const AddTask = () => {
             : ""}
         </h1>
       </div>
+      <div className="flex flex-col gap-2">
+        <label htmlFor="TaskDetails" className="text-xl">
+          Task Details
+        </label>
+        {formik.values.TaskDetails.map((task, index) => (
+          <div key={index} className="flex gap-2">
+            <div className="flex flex-col gap-2">
+              <input
+                className={`flex w-full p-2 rounded-md bg-input border-border text-foreground`}
+                type="text"
+                placeholder="Task Name"
+                value={task.detailName}
+                onChange={(event) => handleDetailNameChange(index, event)}
+              />
+              <select
+                className="bg-input py-2 rounded-md"
+                name=""
+                id=""
+                value={task.detailStatus}
+                onChange={(event) => handleDetailStatusChange(index, event)}
+              >
+                <option value="">status</option>
+                <option value="notStarted">Not Started</option>
+                <option value="inProgress">In progress</option>
+                <option value="completed">Completed</option>
+              </select>
+            </div>
+            <div className="flex flex-col gap-2">
+              <input
+                className={`flex w-full p-2 rounded-md bg-input border-border text-foreground`}
+                type="date"
+                value={task.detailestimationDate}
+                onChange={(event) => handleDetailDateChange(index, event)}
+              />
+              <textarea
+                rows={2}
+                className={`flex w-full p-2 rounded-md bg-input border-border text-foreground`}
+                value={task.detailDescription}
+                onChange={(event) => handleDetailDescription(index, event)}
+              />
+            </div>
+
+            {formik.values.TaskDetails.length > 1 && (
+              <button
+                type="button"
+                onClick={() => removeTask(index)}
+                className={`flex items-center justify-center w-8 h-8 rounded-full bg-input `}
+              >
+                -
+              </button>
+            )}
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={addTaskDetail}
+          className={`flex items-center justify-center w-8 h-8 rounded-full ${
+            darkMode ? "bg-gray-900 text-gray-400" : "bg-gray-200 text-gray-600"
+          }`}
+        >
+          +
+        </button>
+      </div>
 
       <div className="flex gap-2 ">
         <button
           type="submit"
           className={`btn p-2 rounded-md bg-blue-600 hover:bg-blue-500 text-gray-200 w-40 opacity-90`}
+          disabled={addTask.isLoading}
         >
-          Add Task
+          {addTask.isLoading ? "Adding..." : "Add task"}
         </button>
         <button
           type="button"
@@ -159,6 +271,7 @@ const AddTask = () => {
           Cancel
         </button>
       </div>
+
       {error && <div className="text-red-500">{error}</div>}
     </form>
   );

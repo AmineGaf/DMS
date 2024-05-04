@@ -1,5 +1,4 @@
 import React, { useState, useContext, useEffect } from "react";
-import { IoIosSearch } from "react-icons/io";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
 import { ThemeContext } from "../contexts/ThemeContext";
@@ -29,8 +28,8 @@ const Navbar = () => {
   };
 
   const handleNavigate = () => {
-    navigate(`/profile/${user.fullname}`, {state: {user}});
-    
+    navigate(`/profile/${user.fullname}`, {state: user.email});
+   
   }
 
   const handleSettings = () => {
@@ -84,7 +83,7 @@ const Navbar = () => {
 
         {open && (
           <div
-            className={`absolute flex flex-col gap-3 right-8 top-14 md:w-[210px] w-[180px] border-2 p-3 rounded-md bg-card  `}
+            className={`absolute flex flex-col gap-3 right-8 top-14 md:w-[210px] w-[180px] border-2 p-3 rounded-md bg-card z-20  `}
           >
             <div className="flex justify-between">
               <div>

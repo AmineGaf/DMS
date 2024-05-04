@@ -7,6 +7,10 @@ const URL = process.env.DATABASE_URL;
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
 
+
+
+const app = express();
+
 mongoose.connect(URL);
 const database = mongoose.connection;
 
@@ -18,7 +22,7 @@ database.once('connected', () => {
     console.log('Data Base connected');
 })
 
-const app = express();
+
 const corsOptions = {
     origin: 'http://localhost:5173', 
     optionsSuccessStatus: 200,
@@ -49,6 +53,7 @@ app.use((req, res, next) => {
 
 
 app.use('/api', routes);
+
 
 app.listen(3000, () => {
     console.log(`Server Started at ${3000}`)

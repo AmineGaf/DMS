@@ -26,7 +26,7 @@ const User = ({ user }) => {
   };
 
   const handleView = () => {
-    navigate(`/profile/${user.fullname}`, {state: {user}});
+    navigate(`/profile/${user.fullname}`, {state: user.email});
   }
 
   return (
@@ -52,7 +52,7 @@ const User = ({ user }) => {
         />
         {openMenu && (
           <div
-            className={`absolute flex flex-col right-[120px] p-3 px-5 gap-1 rounded-md font-bold ${
+            className={`absolute z-10 flex flex-col right-[120px] p-3 px-5 gap-1 rounded-md font-bold ${
               darkMode
                 ? "bg-gray-800 opacity-80 "
                 : "border border-gray-300 bg-gray-100 "

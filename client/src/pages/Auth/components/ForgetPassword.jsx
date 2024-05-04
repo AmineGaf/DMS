@@ -41,7 +41,7 @@ const ForgetPassword = () => {
   return (
     <div
       style={{ backgroundImage: `url(${background})` }}
-      className="flex flex-col items-center px-6 bg-cover h-screen md:justify-center md:gap-[20px]"
+      className="flex flex-col items-center px-6 bg-cover h-screen md:justify-center md:gap-[20px] text-primary-foreground"
     >
       <form
         className="bg-blue-200 p-20  flex flex-col gap-7 rounded-md text-xl"
