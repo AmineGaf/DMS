@@ -33,6 +33,7 @@ const AddProject = ({ userId }) => {
   const formik = useFormik({
     initialValues: {
       title: "",
+      projectType: "",
       logo: "",
       ProjectManager: "",
       team: [{ MemberEmail: "", MemberRole: "" }],
@@ -44,6 +45,7 @@ const AddProject = ({ userId }) => {
     },
     validationSchema: Yup.object({
       title: Yup.string().required("Project Title is required"),
+      projectType: Yup.string().required("Project type Title is required"),
       // logo: Yup.string().required("Project Logo is required"),
       ProjectManager: Yup.string().required("Project Manager Name is required"),
       // "team[0].MemberName": Yup.string().required("Member Name is required"),
@@ -129,10 +131,40 @@ const AddProject = ({ userId }) => {
           className={`flex w-full p-2 rounded-md bg-input border-border text-foreground`}
           type="text"
           name="title"
-          placeholder="...Facebook"
+          placeholder="...project title"
           value={formik.values.title}
           onChange={formik.handleChange}
         />
+        <h1 className="text-red-400">
+          {formik.touched.title && formik.errors.title
+            ? formik.errors.title
+            : ""}
+        </h1>
+      </div>
+      <div className="flex flex-col gap-2">
+        <label className="text-xl" htmlFor="title">
+          Project type
+        </label>
+        <select
+          name="projectType"
+          value={formik.values.projectType}
+          onChange={formik.handleChange}
+          className="w-full rounded-md bg-input border border-border py-2"
+        >
+          <option>Select option</option>
+          <option>IOT</option>
+          <option>Embedded system</option>
+          <option>Software Developement</option>
+          <option>Artificial intelligence</option>
+        </select>
+        {/* <input
+          className={`flex w-full p-2 rounded-md bg-input border-border text-foreground`}
+          type="text"
+          name="title"
+          placeholder="...project type"
+          value={formik.values.projectType}
+          onChange={formik.handleChange}
+        /> */}
         <h1 className="text-red-400">
           {formik.touched.title && formik.errors.title
             ? formik.errors.title
@@ -162,7 +194,7 @@ const AddProject = ({ userId }) => {
           className={`flex w-full p-2 rounded-md bg-input border-border text-foreground`}
           type="text"
           name="ProjectManager"
-          placeholder="...Amine Gafsi"
+          placeholder="...project manager"
           value={formik.values.ProjectManager}
           onChange={formik.handleChange}
         />
@@ -311,7 +343,7 @@ const AddProject = ({ userId }) => {
 
       {error && <p className="text-red-500">{error}</p>}
       <button
-        className={`flex justify-center py-2 text-lg font-semibold rounded-md ${
+        className={`flex justify-center py-2 text-lg font-semibold rounded-md z-10 ${
           darkMode ? "bg-gray-800 text-gray-300" : "bg-gray-300 text-gray-700"
         }`}
         type="submit"

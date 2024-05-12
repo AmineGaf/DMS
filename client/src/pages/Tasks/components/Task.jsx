@@ -11,7 +11,7 @@ const Task = ({ task }) => {
   const [openMenu, setOpenMenu] = useState(false);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  //DELETE TASK
+
   const deleteUserMutation = useMutation(
     (id) => axios.delete(`http://localhost:3000/api/task/deletetask/${id}`),
     {
@@ -20,6 +20,7 @@ const Task = ({ task }) => {
       },
     }
   );
+
   const handleDeleteUser = () => {
     deleteUserMutation.mutate(task._id);
   };
@@ -27,7 +28,6 @@ const Task = ({ task }) => {
   const handleViewTask = (task) => {
     navigate(`/taskDetails/${task._id}`, { state: { task } });
   };
-
   return (
     <tr
       className={`border-y ${

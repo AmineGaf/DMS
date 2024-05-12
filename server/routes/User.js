@@ -70,6 +70,7 @@ UserRouter.get('/getAll', async (req, res) => {
   
       res.json({
         users,
+        totalUsers,
         totalPages
       });
     } catch (error) {

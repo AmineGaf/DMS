@@ -21,6 +21,9 @@ import ProjectDetails from "./pages/projects/components/ProjectDetails";
 import Gmail from "./pages/gmail/Gmail";
 import ChatGroup from "./pages/chat/chatGroup/ChatGroup";
 import Messenger from "./pages/chat/privateChat/Messenger";
+import GmailDetails from "./pages/gmail/components/GmailDetails";
+import { NotificationProvider } from "./contexts/NotificationContext";
+import Conversation from "./pages/chat/Conversation/components/Conversation";
 
 const RequireAuth = ({ children, requiredRoles }) => {
   const { user } = useContext(AuthContext);
@@ -99,54 +102,66 @@ const App = () => {
       requiredRoles: ["admin", "Project Manager", "employee"],
     },
     {
+      path: "gmail/:gmailId",
+      element: <GmailDetails />,
+      requiredRoles: ["admin", "Project Manager", "employee"],
+    },
+    {
       path: "chat/group",
-      element: <ChatGroup/>,
+      element: <ChatGroup />,
       requiredRoles: ["admin", "Project Manager", "employee"],
     },
     {
       path: "chat/private",
-      element: <Messenger/>,
+      element: <Messenger />,
       requiredRoles: ["admin", "Project Manager", "employee"],
     },
+    // {
+    //   path: "conversation/:conversationId",
+    //   element: <Conversation />,
+    //   requiredRoles: ["admin", "Project Manager", "employee"],
+    // },
   ];
 
   const { user } = useContext(AuthContext);
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <BrowserRouter>
-          <div className="flex">
-            {user && <Sidebar />}
-            <div className="w-full bg-background text-foreground">
-              {user && <Navbar />}
-              <Routes>
-                {/* Authentification routes  */}
-                {!user &&
-                  authRoutes.map((route) => (
+        <NotificationProvider>
+          <BrowserRouter>
+            <div className="flex">
+              {user && <Sidebar />}
+              <div className="w-full bg-background text-foreground">
+                {user && <Navbar />}
+                <Routes>
+                  {/* Authentification routes  */}
+                  {!user &&
+                    authRoutes.map((route) => (
+                      <Route
+                        key={route.path}
+                        path={route.path}
+                        element={route.element}
+                      />
+                    ))}
+
+                  {/* Private routes  */}
+                  {appRoutes.map((route) => (
                     <Route
                       key={route.path}
                       path={route.path}
-                      element={route.element}
+                      element={
+                        <RequireAuth requiredRoles={route.requiredRoles}>
+                          {route.element}
+                        </RequireAuth>
+                      }
                     />
                   ))}
-
-                {/* Private routes  */}
-                {appRoutes.map((route) => (
-                  <Route
-                    key={route.path}
-                    path={route.path}
-                    element={
-                      <RequireAuth requiredRoles={route.requiredRoles}>
-                        {route.element}
-                      </RequireAuth>
-                    }
-                  />
-                ))}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </div>
             </div>
-          </div>
-        </BrowserRouter>
+          </BrowserRouter>
+        </NotificationProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );

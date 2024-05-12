@@ -51,7 +51,7 @@ const EditProject = ({ project}) => {
     }),
     onSubmit: (values, { resetForm }) => {
       values.logo = image;
-      console.log(image);
+
       addProject.mutate(values);
       resetForm();
     },

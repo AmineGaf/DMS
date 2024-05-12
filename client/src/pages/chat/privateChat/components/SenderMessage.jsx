@@ -19,9 +19,6 @@ const SenderMessage = ({ userId, message }) => {
     return <h2>{error.message}</h2>;
   }
 
-  console.log(data.data)
-  
-  console.log(data.data);
 
   return (
     <div className="flex flex-col justify-start gap-1">

@@ -9,16 +9,20 @@ import { AuthContext } from "../../Auth/contexts/AuthContext";
 import { ThemeContext } from "../../../contexts/ThemeContext";
 import AddContact from "../components/AddContact";
 import { useQuery } from "react-query";
-import SenderMessage from "./components/SenderMessage";
-import ReceiverMessage from "./components/ReceiverMessage";
+import { NotificationContext } from "../../../contexts/NotificationContext";
+import { useLocation } from "react-router-dom";
 
 export default function Messenger() {
   const [conversations, setConversations] = useState([]);
+
+  const { updateNotification } = useContext(NotificationContext);
+
   const [currentChat, setCurrentChat] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const [contacts, setContacts] = useState(true);
+  const [connectedUsers, setConnectedUSers] = useState([]);
 
   const [searchContact, setSearchContact] = useState("");
   const [searchFriend, setSearchFriend] = useState("");
@@ -29,6 +33,12 @@ export default function Messenger() {
 
   const { darkMode } = useContext(ThemeContext);
 
+  const location = useLocation();
+
+  useEffect(() => {
+    setCurrentChat(location?.state);
+  }, [location]);
+
   useEffect(() => {
     socket.current = io("ws://localhost:8900");
     socket.current.on("getMessage", (data) => {
@@ -38,6 +48,10 @@ export default function Messenger() {
         createdAt: Date.now(),
       });
     });
+
+    socket.current.on("getNotification", (data) => {
+      updateNotification(data);
+    });
   }, []);
 
   useEffect(() => {
@@ -46,10 +60,12 @@ export default function Messenger() {
       setMessages((prev) => [...prev, arrivalMessage]);
   }, [arrivalMessage, currentChat]);
 
+
+  
   useEffect(() => {
     socket.current.emit("addUser", user._id);
     socket.current.on("getUsers", (users) => {
-      console.log(users);
+      setConnectedUSers(users);
     });
   }, [user]);
 
@@ -95,7 +111,22 @@ export default function Messenger() {
       (member) => member !== user._id
     );
 
+    const notification = {
+      senderId: user._id,
+      receiverId,
+      text: newMessage,
+      read: false,
+    };
+
+    console.log(notification);
+
     socket.current.emit("sendMessage", {
+      senderId: user._id,
+      receiverId,
+      text: newMessage,
+    });
+
+    socket.current.emit("sendNotification", {
       senderId: user._id,
       receiverId,
       text: newMessage,
@@ -108,6 +139,15 @@ export default function Messenger() {
       );
       setMessages([...messages, res.data]);
       setNewMessage("");
+    } catch (err) {
+      console.log(err);
+    }
+
+    try {
+      const res = await axios.post(
+        "http://localhost:3000/api/notification/addNotification",
+        notification
+      );
     } catch (err) {
       console.log(err);
     }
@@ -146,10 +186,14 @@ export default function Messenger() {
         receiverId: contact._id,
       }
     );
+
     if (res.status === 200) {
       setCurrentChat(res.data);
     }
   };
+
+
+
 
   return (
     <>
@@ -190,7 +234,7 @@ export default function Messenger() {
               <div className="flex flex-col gap-5 pt-5 h-[530px] overflow-auto no-scrollbar ">
                 {conversations.map((c) => (
                   <div key={c._id} onClick={() => setCurrentChat(c)}>
-                    <Conversation conversation={c} currentUser={user} />
+                    <Conversation conversation={c} currentUser={user} connectedUsers={connectedUsers} friendName={searchFriend} />
                   </div>
                 ))}
               </div>

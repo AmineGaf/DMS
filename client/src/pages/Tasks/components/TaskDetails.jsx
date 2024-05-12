@@ -1,15 +1,56 @@
-import { useContext } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { ThemeContext } from "../../../contexts/ThemeContext";
 import { GrInProgress } from "react-icons/gr";
 import { LuCheckCircle } from "react-icons/lu";
+import { useMutation, useQueryClient } from "react-query";
+import axios from "axios";
 
 const TaskDetails = () => {
+  const queryClient = useQueryClient();
   const location = useLocation();
   const Task = location.state.task;
-  const { darkMode } = useContext(ThemeContext);
 
-  
+  const [updatedTaskDetails, setUpdatedTaskDetails] = useState(
+    Task?.TaskDetails || []
+  );
+
+  const editTask = useMutation(
+    async (updatedTask) => {
+      const response = await axios.patch(
+        `http://localhost:3000/api/task/updatetask/${Task._id}`,
+        updatedTask
+      );
+      return response.data;
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("tasks");
+      },
+    }
+  );
+  const handleUpdateStatus = async (value, taskId) => {
+    const updatedDetails = Task.TaskDetails.map((task) =>
+      task._id === taskId ? { ...task, detailStatus: value } : task
+    );
+
+    setUpdatedTaskDetails(updatedDetails);
+
+    const updatedTask = {
+      TaskDetails: updatedDetails,
+    };
+
+    await editTask.mutateAsync(updatedTask);
+
+    queryClient.invalidateQueries("tasks");
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await queryClient.invalidateQueries("tasks");
+    };
+
+    fetchData();
+  }, [Task, updatedTaskDetails, queryClient]);
 
   return (
     <div className={`flex flex-col pt-4 text-foreground gap-6`}>
@@ -39,85 +80,112 @@ const TaskDetails = () => {
           </thead>
           <tbody className="text-center ">
             <td className="border border-border  ">
-              {Task.TaskDetails?.filter(
-                (task) => task.detailStatus === "notStarted"
-              ).map((task) => (
-                <div
-                  key={task._id}
-                  className="border border-border flex flex-col p-5 gap-5 "
-                >
-                  <div className="flex flex-col items-start gap-2">
-                    <h1 className="text-ring"> {task.detailName}</h1>
-                    <p className="">{task.detailDescription}</p>
-                  </div>
+              {updatedTaskDetails
+                ?.filter((task) => task.detailStatus === "notStarted")
+                .map((task) => (
+                  <div
+                    key={task._id}
+                    className="border border-border flex flex-col p-5 gap-5 "
+                  >
+                    <div className="flex flex-col items-start gap-2">
+                      <h1 className="text-ring"> {task.detailName}</h1>
+                      <p className="">{task.detailDescription}</p>
+                    </div>
 
-                  <div className="flex justify-between items-center">
-                    <h1 className="bg-input p-2 rounded-md">
-                      {task.detailStatus}
-                    </h1>
-                    <h1 className="text-gray-600">
-                      
-                      {new Date(task.detailestimationDate).toLocaleDateString(
-                        "en-US"
-                      )}
-                    </h1>
+                    <div className="flex justify-between items-center">
+                      <select
+                        name="detailsStatus"
+                        id="detailsStatus"
+                        value={task.detailStatus}
+                        onChange={(e) =>
+                          handleUpdateStatus(e.target.value, task._id)
+                        }
+                        className="bg-input p-2 rounded-md"
+                      >
+                        <option value="notStarted">Not Started</option>
+                        <option value="inProgress">In progress</option>
+                        <option value="completed">Completed</option>
+                      </select>
+                      <h1 className="text-gray-600">
+                        {new Date(task.detailestimationDate).toLocaleDateString(
+                          "en-US"
+                        )}
+                      </h1>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </td>
             <td className="border border-border ">
-              {Task.TaskDetails?.filter(
-                (task) => task.detailStatus === "inProgress"
-              ).map((task) => (
-                <div
-                  key={task._id}
-                  className="border border-border flex flex-col p-5 gap-5  "
-                >
-                  <div className="flex flex-col items-start gap-2">
-                    <h1 className="text-ring"> {task.detailName}</h1>
-                    <p className="">{task.detailDescription}</p>
-                  </div>
+              {updatedTaskDetails
+                ?.filter((task) => task.detailStatus === "inProgress")
+                .map((task) => (
+                  <div
+                    key={task._id}
+                    className="border border-border flex flex-col p-5 gap-5  "
+                  >
+                    <div className="flex flex-col items-start gap-2">
+                      <h1 className="text-ring"> {task.detailName}</h1>
+                      <p className="">{task.detailDescription}</p>
+                    </div>
 
-                  <div className="flex justify-between items-center">
-                    <h1 className="bg-input p-2 rounded-md">
-                      {task.detailStatus}
-                    </h1>
-                    <h1 className="text-gray-600">
-                      
-                      {new Date(task.detailestimationDate).toLocaleDateString(
-                        "en-US"
-                      )}
-                    </h1>
+                    <div className="flex justify-between items-center">
+                      <select
+                        name="detailsStatus"
+                        id="detailsStatus"
+                        value={task.detailStatus}
+                        onChange={(e) =>
+                          handleUpdateStatus(e.target.value, task._id)
+                        }
+                        className="bg-input p-2 rounded-md"
+                      >
+                        <option value="notStarted">Not Started</option>
+                        <option value="inProgress">In progress</option>
+                        <option value="completed">Completed</option>
+                      </select>
+                      <h1 className="text-gray-600">
+                        {new Date(task.detailestimationDate).toLocaleDateString(
+                          "en-US"
+                        )}
+                      </h1>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </td>
             <td className="border border-border">
-              {Task.TaskDetails?.filter(
-                (task) => task.detailStatus === "completed"
-              ).map((task) => (
-                <div
-                  key={task._id}
-                  className="border border-border flex flex-col p-5 gap-5"
-                >
-                  <div className="flex flex-col items-start gap-2">
-                    <h1 className="text-ring"> {task.detailName}</h1>
-                    <p className="">{task.detailDescription}</p>
-                  </div>
+              {updatedTaskDetails
+                ?.filter((task) => task.detailStatus === "completed")
+                .map((task) => (
+                  <div
+                    key={task._id}
+                    className="border border-border flex flex-col p-5 gap-5"
+                  >
+                    <div className="flex flex-col items-start gap-2">
+                      <h1 className="text-ring"> {task.detailName}</h1>
+                      <p className="">{task.detailDescription}</p>
+                    </div>
 
-                  <div className="flex justify-between items-center">
-                    <h1 className="bg-input p-2 rounded-md">
-                      {task.detailStatus}
-                    </h1>
-                    <h1 className="text-gray-600">
-                      
-                      {new Date(task.detailestimationDate).toLocaleDateString(
-                        "en-US"
-                      )}
-                    </h1>
+                    <div className="flex justify-between items-center">
+                      <select
+                        name="detailsStatus"
+                        id="detailsStatus"
+                        value={task.detailStatus}
+                        onChange={(e) =>
+                          handleUpdateStatus(e.target.value, task._id)
+                        }
+                        className="bg-input p-2 rounded-md"
+                      >
+                        <option value="notStarted">Not Started</option>
+                        <option value="inProgress">In progress</option>
+                        <option value="completed">Completed</option>
+                      </select>
+                      <h1 className="text-gray-600">
+                        {new Date(task.detailestimationDate).toLocaleDateString(
+                          "en-US"
+                        )}
+                      </h1>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </td>
           </tbody>
         </table>

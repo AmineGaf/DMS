@@ -9,6 +9,7 @@ ProjectRouter.post("/addProject", async (req, res) => {
   const {
     userId,
     title,
+    projectType,
     logo,
     ProjectManager,
     team,
@@ -36,6 +37,7 @@ ProjectRouter.post("/addProject", async (req, res) => {
     const project = new ProjectModel({
       userId,
       title,
+      projectType,
       logo: {
         public_id: result.public_id,
         url: result.secure_url,
@@ -69,13 +71,15 @@ ProjectRouter.get("/getAll", async (req, res) => {
     const skip = (page - 1) * limit;
     const userId = req.query.userId; // User ID from the query parameters
 
+    const projectsSum = await ProjectModel.countDocuments(); 
+    const allprojects = await ProjectModel.find();
     const query = { userId }; // Filter tasks by user ID
 
     const projects = await ProjectModel.find(query).skip(skip).limit(limit).exec();
     const totalProjects = await ProjectModel.countDocuments(query);
     const totalpages = Math.ceil(totalProjects / limit);
 
-    res.json({ projects, totalpages });
+    res.json({ projects, totalpages, projectsSum, allprojects });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

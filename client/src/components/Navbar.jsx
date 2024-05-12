@@ -1,54 +1,30 @@
 import React, { useState, useContext, useEffect } from "react";
-import { IoMdNotificationsOutline } from "react-icons/io";
-import { CgProfile } from "react-icons/cg";
 import { ThemeContext } from "../contexts/ThemeContext";
-import { PiSignOutBold } from "react-icons/pi";
-import { IoSettingsOutline } from "react-icons/io5";
-import {  useNavigate } from "react-router-dom";
 import { AuthContext } from "../pages/Auth/contexts/AuthContext";
+import Notifications from "./Notifications";
+import UserMenu from "./UserMenu";
 
 const Navbar = () => {
-  const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
-
 
   const { darkMode, toggleDarkMode } = useContext(ThemeContext);
-  const user = JSON.parse(localStorage.getItem('user'));
+  const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
     setLoading(false);
   }, []);
 
-  const { dispatch } = React.useContext(AuthContext);
-  
-  const handleLogout = () => {
-    dispatch({ type: "LOGOUT", payload: null });
-    navigate("/");
-  };
-
-  const handleNavigate = () => {
-    navigate(`/profile/${user.fullname}`, {state: user.email});
-   
-  }
-
-  const handleSettings = () => {
-    navigate(`/settings/${user.fullname}`, {state: {user}});
-  }
-
   if (loading) {
     return <div>Loading...</div>;
   }
-   
 
   return (
     <div
       className={`md:flex bg-background text-foreground border border-border  justify-end px-4 p-3 duration-500 max-h-[70px] shadow-md border-b gap-4   `}
     >
-      <div className="flex gap-4 items-center">
-        <IoMdNotificationsOutline
-          className={`text-xl h-7 w-7  cursor-pointer `}
-        />
+      <div className="flex gap-4 items-center ">
+        <Notifications />
+
         <label className="swap swap-rotate">
           <input type="checkbox" onClick={toggleDarkMode} />
 
@@ -70,71 +46,7 @@ const Navbar = () => {
           </svg>
         </label>
       </div>
-
-      <div className=" ">
-        {user && (
-          <img
-          src={user.image.url}
-          className="rounded-full w-[46px] h-[46px]  cursor-pointer"
-          onClick={() => setOpen(!open)}
-        />
-        )}
-        
-
-        {open && (
-          <div
-            className={`absolute flex flex-col gap-3 right-8 top-14 md:w-[210px] w-[180px] border-2 p-3 rounded-md bg-card z-20  `}
-          >
-            <div className="flex justify-between">
-              <div>
-                <div
-                  className={`${
-                    darkMode ? "text-gray-200" : "text-gray-600"
-                  } font-bold text-lg `}
-                >
-                  {user.fullname}
-                </div>
-                <div className=" text-gray-400">{user.role}</div>
-              </div>
-              <div>
-                <img src={user.image.url} alt="" className="md:h-14 h-10 rounded-md" />
-              </div>
-            </div>
-            <div
-              className={`flex flex-col gap-2 ${
-                darkMode ? "text-gray-400" : "text-gray-600"
-              }`}
-            >
-              <div
-                onClick={handleNavigate}
-                className={`flex gap-2  cursor-pointer duration-150  ${
-                  darkMode ? "hover:text-sky-600" : "hover:text-blue-400"
-                }`}
-              >
-                <CgProfile className="text-xl mt-[2px] " /> My Profile
-              </div>
-              <div
-                onClick={handleSettings}
-                className={`flex gap-2  cursor-pointer duration-150 ${
-                  darkMode ? "hover:text-sky-600" : "hover:text-blue-400"
-                }`}
-              >
-                <IoSettingsOutline className="text-xl mt-[2px] " />
-                Settings
-              </div>
-              <div
-                className={`flex gap-2  cursor-pointer duration-150 ${
-                  darkMode ? "hover:text-sky-600" : "hover:text-blue-400"
-                }`}
-                onClick={handleLogout}
-              >
-                <PiSignOutBold className="text-xl mt-[2px] " />
-                Logout
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
+      <UserMenu user={user} />
     </div>
   );
 };

@@ -34,10 +34,9 @@ const ProjectDetails = () => {
         />
         <div className="flex flex-col gap-7">
           <h1 className="text-2xl font-semibold">{project.title}</h1>
+          <h1 className="text-gray-300">{project.projectType}</h1>
           <p>
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ipsam,
-            accusamus ullam? Iste ea nesciunt rerum quo fugit? Saepe nemo
-            voluptas{" "}
+            {project.description}
           </p>
           <div className="flex flex-col gap-2">
             <h1 className="text-lg text-ring">Project Manager</h1>
@@ -45,7 +44,7 @@ const ProjectDetails = () => {
           </div>
           <div className="flex flex-col gap-2">
             <h1 className="text-lg text-ring">Team size</h1>
-            <h1>10</h1>
+            <h1>{project.team.length}</h1>
           </div>
           <div className="flex flex-col gap-2">
             <h1 className="text-lg text-ring">Creation Date</h1>

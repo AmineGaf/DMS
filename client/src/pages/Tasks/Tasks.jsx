@@ -4,7 +4,6 @@ import { TasksData } from "./hooks/TasksData";
 import { IoIosSearch } from "react-icons/io";
 import Task from "./components/Task";
 import AddTask from "./components/AddTask";
-import Navbar from "../../components/Navbar";
 import { AuthContext } from "../Auth/contexts/AuthContext";
 
 const Tasks = () => {

@@ -7,8 +7,8 @@ const task = require('./task.js');
 const Project = require('./Project.js');
 const messages = require('./messages.js');
 const conversation = require('./conversation.js');
-
-// const emailSender = require('./gmailSender.js');
+const gmail = require('./gmail.js');
+const notification = require('./notifications.js');
 
 
 
@@ -32,6 +32,10 @@ routes.use('/project', Project);
 routes.use('/messages', messages);
 routes.use('/conversation', conversation);
 
+//gmail
+routes.use('/gmail', gmail);
 
+//notifications
+routes.use('/notification', notification);
 
 module.exports = routes;

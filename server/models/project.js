@@ -10,6 +10,10 @@ const projectShema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  projectType: {
+    type: String,
+    required: true,
+  },
   logo: {
     public_id: {
       type: String,

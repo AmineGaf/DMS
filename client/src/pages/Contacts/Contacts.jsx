@@ -32,7 +32,7 @@ const Contacts = () => {
 
   //SORT USERS
   const sortedUsers = [...data.data.users];
-  console.log(sortedUsers)
+
 
   //SELECT USERS
   if (selectedSort === "newest") {
