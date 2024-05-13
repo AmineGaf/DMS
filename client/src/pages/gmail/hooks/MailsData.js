@@ -13,7 +13,7 @@ export const MailsData = (currentPage) => {
     },
     {
       keepPreviousData: true,
-      staleTime: 10000,
+      staleTime: 60000, // Data remains valid for 1 minute
     }
   );
 };

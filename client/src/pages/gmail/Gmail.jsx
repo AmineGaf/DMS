@@ -4,6 +4,8 @@ import { IoIosSearch } from "react-icons/io";
 import { ThemeContext } from "../../contexts/ThemeContext";
 import { useNavigate } from "react-router-dom";
 
+import { CustomDialog } from "./components/CustomDialog";
+
 const Gmail = () => {
   const { darkMode } = useContext(ThemeContext);
   const [currentPage, setCurrentPage] = useState(1);
@@ -22,13 +24,10 @@ const Gmail = () => {
 
   const totalPages = data?.totalPages || 0;
 
-
-
   //navigation to gmail details
   const hadleGmailNavigation = (mail) => {
-    navigate(`/gmail/${mail.id}`, {state: mail});
-  }
-
+    navigate(`/gmail/${mail.id}`, { state: mail });
+  };
 
   const handlePrevPage = () => {
     setCurrentPage((prevPage) => prevPage - 1);
@@ -53,19 +52,20 @@ const Gmail = () => {
             <IoIosSearch className="text-2xl" />
           </span>
         </div>
-        <button className="p-2 rounded-md bg-blue-600 hover:bg-blue-500 text-gray-200 max-w-40 opacity-90">
-          Send mail
-        </button>
+        <div className="bg-primary p-2 px-4 rounded-md text-gray-200 mr-5">
+          <CustomDialog />
+        </div>
       </div>
       {data?.data.messages
         ?.filter((mail) =>
           mail.name.toLowerCase().includes(searchMail.toLowerCase())
         )
         .map((mail) => (
-          <div 
-          key={mail.id}
-          onClick={() => hadleGmailNavigation(mail)}
-          className="flex gap-4 items-center cursor-pointer hover:shadow-xl">
+          <div
+            key={mail.id}
+            onClick={() => hadleGmailNavigation(mail)}
+            className="flex gap-4 items-center cursor-pointer hover:shadow-xl"
+          >
             <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white text-xl font-bold">
               {mail.name.charAt(0)}
             </div>

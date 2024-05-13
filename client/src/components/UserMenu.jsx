@@ -41,7 +41,7 @@ const UserMenu = ({ user }) => {
         className={`dropdown-content z-[1] menu p-4 shadow  rounded-box w-64 mt-1 mr-3 ${
           darkMode
             ? "bg-primary-foreground border border-border"
-            : "bg-gray-200 border border-gray-400"
+            : "bg-primary-foreground border border-gray-400"
         }`}
       >
         <div className="flex justify-between">

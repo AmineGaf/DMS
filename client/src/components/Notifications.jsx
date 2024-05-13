@@ -29,7 +29,7 @@ const Notifications = () => {
       </div>
       <ul
         tabIndex={0}
-        className={`dropdown-content z-[1] menu p-4 shadow  rounded-box w-64 ml-4 mt-1 ${darkMode ? "bg-primary-foreground border border-border" : "bg-gray-200 border border-gray-400"}`}
+        className={`dropdown-content z-[1] menu p-4 shadow  rounded-box w-64 ml-4 mt-1 ${darkMode ? "bg-primary-foreground border border-border" : "bg-primary-foreground border border-gray-400"}`}
       >
         {hasNotifications > 0 ? (
           reversedNotifications.map((notification) => (

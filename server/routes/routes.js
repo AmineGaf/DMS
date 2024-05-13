@@ -9,6 +9,7 @@ const messages = require('./messages.js');
 const conversation = require('./conversation.js');
 const gmail = require('./gmail.js');
 const notification = require('./notifications.js');
+const sendMail = require('./sendMail.js');
 
 
 
@@ -34,6 +35,9 @@ routes.use('/conversation', conversation);
 
 //gmail
 routes.use('/gmail', gmail);
+
+//sending mails
+routes.use('/sendmail', sendMail);
 
 //notifications
 routes.use('/notification', notification);
