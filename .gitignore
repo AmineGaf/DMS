@@ -1,5 +1,4 @@
 server/node_modules
 
 client/node_modules
-config.bat
-node_modules
+server/.env
