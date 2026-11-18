@@ -60,8 +60,6 @@ export default function Messenger() {
       setMessages((prev) => [...prev, arrivalMessage]);
   }, [arrivalMessage, currentChat]);
 
-
-  
   useEffect(() => {
     socket.current.emit("addUser", user._id);
     socket.current.on("getUsers", (users) => {
@@ -192,29 +190,41 @@ export default function Messenger() {
     }
   };
 
-
-
-
   return (
     <>
       <div className="flex p-10 gap-10 h-[706px]">
         <div className="flex-[1] flex-col gap-3">
-          <div className="pb-3">
-            {contacts ? (
-              <button
-                className="max-w-[50%] p-2 border border-gray-600 rounded-md hover:bg-border"
-                onClick={() => setContacts(!contacts)}
-              >
-                Contacts
-              </button>
-            ) : (
-              <button
-                className="max-w-[50%] p-2 border border-gray-600 rounded-md hover:bg-border"
-                onClick={() => setContacts(!contacts)}
-              >
-                Messages
-              </button>
-            )}
+          <div className="pb-3 flex gap-2">
+            <button
+              className={`max-w-[50%] p-2 border rounded-md ${
+                contacts
+                  ? "bg-border border-none"
+                  : "border-gray-600 hover:bg-border"
+              }`}
+              onClick={() => setContacts(true)}
+            >
+              Messages
+            </button>
+            <button
+              className={`max-w-[50%] p-2 border rounded-md ${
+                !contacts
+                  ? "bg-border border-none"
+                  : "border-gray-600 hover:bg-border"
+              }`}
+              onClick={() => setContacts(false)}
+            >
+              Contacts
+            </button>
+            {/* <button
+              className={`max-w-[50%] p-2 border rounded-md ${
+                !contacts
+                  ? "bg-primary text-white"
+                  : "border-gray-600 hover:bg-border"
+              }`}
+            >
+              Rooms
+            </button> */}
+            
           </div>
 
           {contacts ? (
@@ -234,7 +244,12 @@ export default function Messenger() {
               <div className="flex flex-col gap-5 pt-5 h-[530px] overflow-auto no-scrollbar ">
                 {conversations.map((c) => (
                   <div key={c._id} onClick={() => setCurrentChat(c)}>
-                    <Conversation conversation={c} currentUser={user} connectedUsers={connectedUsers} friendName={searchFriend} />
+                    <Conversation
+                      conversation={c}
+                      currentUser={user}
+                      connectedUsers={connectedUsers}
+                      friendName={searchFriend}
+                    />
                   </div>
                 ))}
               </div>

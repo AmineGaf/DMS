@@ -24,6 +24,7 @@ import Messenger from "./pages/chat/privateChat/Messenger";
 import GmailDetails from "./pages/gmail/components/GmailDetails";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import Conversation from "./pages/chat/Conversation/components/Conversation";
+import { FaRegCopyright } from "react-icons/fa";
 
 const RequireAuth = ({ children, requiredRoles }) => {
   const { user } = useContext(AuthContext);
@@ -59,7 +60,7 @@ const App = () => {
     {
       path: "/",
       element: <Dashboard />,
-      requiredRoles: ["admin", "project Manager", "employee"],
+      requiredRoles: ["admin"],
     },
     {
       path: "/contacts",
@@ -158,6 +159,11 @@ const App = () => {
                   ))}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
+                <div className="flex p-2 text-gray-500 pl-7 gap-2 items-center text-sm">
+                  <h1>Copyright</h1>
+                  <FaRegCopyright />
+                  <h1>2024 SE Engineering Sarl. All rights reserved</h1>
+                </div>
               </div>
             </div>
           </BrowserRouter>

@@ -6,7 +6,7 @@ import DMS from "../assets/DMS.svg";
 import { RiTaskLine } from "react-icons/ri";
 import { FiMail } from "react-icons/fi";
 import { GrProjects } from "react-icons/gr";
-import { MdOutlinePermContactCalendar } from "react-icons/md";
+import { MdOutlineDashboard, MdOutlinePermContactCalendar } from "react-icons/md";
 import { FiMessageSquare } from "react-icons/fi";
 import { RiSettings4Line } from "react-icons/ri";
 import { AuthContext } from "../pages/Auth/contexts/AuthContext";
@@ -17,13 +17,15 @@ const Sidebar = () => {
   const [open, setOpen] = useState(false);
 
   const menus = [
+    { name: "dashboard", link: "/", icon: MdOutlineDashboard, requiredRoles: ["admin"] },
     { name: "Tasks", link: "/tasks", icon: RiTaskLine, requiredRoles: ["admin", "Project Manager", "employee"] },
     { name: "Projects", link: "/projects", icon: GrProjects, requiredRoles: ["admin", "Project Manager"] },
     { name: "Contacts", link: "/contacts", icon: MdOutlinePermContactCalendar, requiredRoles: ["admin"] },
     { name: "Gmail", link: "/gmail", icon: FiMail, requiredRoles: ["admin", "Project Manager", "employee"] },
     { name: "Chat", link: "/chat/private", icon: FiMessageSquare, requiredRoles: ["admin", "Project Manager", "employee"] },
-    { name: "Settings", link: `/settings/${user.fullname}`, icon: RiSettings4Line, requiredRoles: ["admin", "Project Manager", "employee"] },
+    { name: "Settings", link: `/settings/${user.fullname}`, icon: RiSettings4Line, requiredRoles: ["admin", "Project Manager", "employee"], data: {user} },
   ];
+  
 
   const filteredMenus = menus.filter(menu => user && menu.requiredRoles.includes(user.role));
 
@@ -49,6 +51,7 @@ const Sidebar = () => {
           {filteredMenus.map((menu, i) => (
             <Link
               to={menu.link}
+              state={menu?.data}
               key={i}
               className={` 
                 group flex items-center text-sm  gap-3.5 p-2 rounded-md 

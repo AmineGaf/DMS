@@ -11,8 +11,8 @@ const Dashboard = () => {
 
   return (
     <div
-      className={`bg-background flex flex-col gap-8 items-center pb-5
-      ${darkMode ? "bg-primary-foreground" : "bg-blue-100"}  `}
+      className={` flex flex-col gap-8 items-center pb-5
+      ${darkMode ? "bg-primary-foreground" : "bg-blue-50"}  `}
     >
       <div className="flex items-center w-full ">
         <div className="hidden md:flex w-full justify-center">

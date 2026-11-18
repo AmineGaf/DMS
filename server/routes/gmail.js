@@ -77,10 +77,6 @@ async function listLabels(auth) {
     console.log("No labels found.");
     return;
   }
-
-  // labels.forEach((label) => {
-  //   console.log(`- ${label.name} : ${label.id}`);
-  // });
 }
 
 fs.readFile("credentials.json", (err, content) => {
@@ -162,7 +158,27 @@ router.get("/messages", async (req, res) => {
         // Getting the message
         const text = fullMessageResponse.data.snippet;
 
-        return { id, name, email, subjectMessage, text };
+        // Getting attachments if available
+        let attachments = [];
+        const payload = fullMessageResponse.data.payload;
+        if (payload && payload.parts) {
+          attachments = await Promise.all(payload.parts
+            .filter((part) => part.filename)
+            .map(async (part) => {
+              const attachment = await gmail.users.messages.attachments.get({
+                userId: "me",
+                messageId: id,
+                id: part.body.attachmentId
+              });
+              return {
+                filename: part.filename,
+                mimeType: part.mimeType,
+                data: attachment.data
+              };
+            }));
+        }
+
+        return { id, name, email, subjectMessage, text, attachments };
       })
     );
 
@@ -179,6 +195,9 @@ router.get("/messages", async (req, res) => {
     res.status(500).json({ error: "Failed to list messages" });
   }
 });
+
+
+
 
 
 // Get message route
